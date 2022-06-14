@@ -3,8 +3,9 @@
 # Find the Dockerfile for mcr.microsoft.com/azure-functions/python:3.0-python3.8-core-tools at this URL
 # https://github.com/Azure/azure-functions-docker/blob/dev/host/3.0/buster/amd64/python/python38/python38-core-tools.Dockerfile
 
-ARG VARIANT=5.0
-FROM mcr.microsoft.com/vscode/devcontainers/dotnetcore:${VARIANT}
+ARG VARIANT=6.0
+# FROM mcr.microsoft.com/vscode/devcontainers/dotnetcore:${VARIANT}
+FROM mcr.microsoft.com/dotnet/nightly/sdk:${VARIANT}
 
 # Options
 ARG INSTALL_ZSH="true"
@@ -24,5 +25,8 @@ RUN apt-get update \
     && /bin/bash /tmp/library-scripts/docker-debian.sh "${ENABLE_NONROOT_DOCKER}" "${SOURCE_SOCKET}" "${TARGET_SOCKET}" "${USERNAME}" \
     # Clean up
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts/
+
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
 
 ENTRYPOINT [ "sleep", "infinity" ]
