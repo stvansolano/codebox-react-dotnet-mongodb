@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+  codebox:
+    build: 
+      dockerfile: Dockerfile
+      context: .devcontainer
+    ports:
+      - 80:5000 
+    depends_on:
+      - db
+    links:
+      - db
+  #app:
+  #  build: your/folder
+  #  ports:
+  #    - 80:80
+  db:
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: example_123
+    image: mcr.microsoft.com/mssql/server
+    restart: always
+    healthcheck:
+        test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P example_123 -Q 'SELECT 1' || exit 1"]
+        interval: 10s
+        retries: 10
+        start_period: 10s
+        timeout: 3s     
+
+# Commands
+# git clone https://github.com/stvansolano/codebox-dotnet.git
+# cd codebox-dotnet
+# docker-compose up -d --build
+# docker exec -it <CONTAINER> bash
+# dotnet new webapi --name MyWebApi
+# cd MyWebApi
+# dotnet run --urls "http://*:5000"
